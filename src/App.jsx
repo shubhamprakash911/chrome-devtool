@@ -35,7 +35,7 @@ function MainComponent() {
     }
 
     if (!info) {
-      return <p>No data available. Enter a URL and click Retrieve.</p>;
+      return <p>No data found. Enter a url to get data</p>;
     }
 
     const displayedInfo = info[viewType];
