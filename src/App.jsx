@@ -1,52 +1,52 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "./app.css";
 
-function App() {
-  const [url, setUrl] = useState("");
-  const [data, setData] = useState(null);
-  const [displayType, setDisplayType] = useState("html");
-  const [loading, setLoading] = useState(false);
+function MainComponent() {
+  const [info, setInfo] = useState(null);
+  const [inputUrl, setInputUrl] = useState("");
+  const [viewType, setViewType] = useState("html");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async () => {
-    setLoading(true);
+  const retrieveData = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:3000/devtool?url=${url}`
+      const res = await axios.get(
+        `https://devtool-backend.onrender.com/devtool?url=${inputUrl}`
       );
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data", error);
+      setInfo(res.data);
+    } catch (err) {
+      console.error("Error retrieving data", err);
     }
-    setLoading(false);
+    setIsLoading(false);
   };
 
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value);
+  const handleInputChange = (e) => {
+    setInputUrl(e.target.value);
   };
 
-  const handleButtonClick = (type) => {
-    setDisplayType(type);
+  const handleButtonPress = (type) => {
+    setViewType(type);
   };
 
-  const renderData = () => {
-    if (loading) {
+  const displayInfo = () => {
+    if (isLoading) {
       return <div className="spinner"></div>;
     }
 
-    if (!data) {
-      return <p>No data available. Enter a URL and click Fetch.</p>;
+    if (!info) {
+      return <p>No data available. Enter a URL and click Retrieve.</p>;
     }
 
-    const displayData = data[displayType];
-    if (typeof displayData === "string") {
-      return <pre>{displayData}</pre>;
+    const displayedInfo = info[viewType];
+    if (typeof displayedInfo === "string") {
+      return <pre>{displayedInfo}</pre>;
     }
 
     return (
       <ul>
-        {displayData.map((item, index) => (
-          <li key={index}>{item}</li>
+        {displayedInfo.map((elem, idx) => (
+          <li key={idx}>{elem}</li>
         ))}
       </ul>
     );
@@ -54,25 +54,25 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Network Tool</h1>
+      <h1>Network Utility</h1>
       <input
         type="text"
-        value={url}
-        onChange={handleUrlChange}
+        value={inputUrl}
+        onChange={handleInputChange}
         placeholder="Enter URL"
       />
-      <button onClick={fetchData}>Fetch</button>
+      <button onClick={retrieveData}>Fetch</button>
       <div className="buttons">
-        <button onClick={() => handleButtonClick("html")}>HTML</button>
-        <button onClick={() => handleButtonClick("css")}>CSS</button>
-        <button onClick={() => handleButtonClick("js")}>JS</button>
-        <button onClick={() => handleButtonClick("xhr")}>XHR</button>
-        <button onClick={() => handleButtonClick("images")}>Images</button>
-        <button onClick={() => handleButtonClick("docs")}>Docs</button>
+        <button onClick={() => handleButtonPress("html")}>HTML</button>
+        <button onClick={() => handleButtonPress("css")}>CSS</button>
+        <button onClick={() => handleButtonPress("js")}>JS</button>
+        <button onClick={() => handleButtonPress("images")}>Images</button>
+        <button onClick={() => handleButtonPress("xhr")}>XHR</button>
+        <button onClick={() => handleButtonPress("docs")}>Docs</button>
       </div>
-      <div className="data-display">{renderData()}</div>
+      <div className="data-display">{displayInfo()}</div>
     </div>
   );
 }
 
-export default App;
+export default MainComponent;
